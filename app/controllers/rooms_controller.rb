@@ -15,14 +15,9 @@ class RoomsController < ApplicationController
 
   def create_book_now
     @room = Room.find(params[:room_id])
-
-    #Save booking in DB if model validation are OK
     booking = @room.bookings.build(booking_params)
-    booking.save
-    #is the Booking saved ?
-    saved = booking.save #true/false
-
-    if saved == true
+   
+    if booking.save  #Save booking in DB if model validation are OK
       booking.update(end_date: booking.start_date + booking.length.days)
       flash[:notice] = "Booking done"
       redirect_to root_path
