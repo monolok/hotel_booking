@@ -10,31 +10,26 @@ class RoomsController < ApplicationController
 
   def book_now
     @room = Room.find(params[:room_id])
-    @book_room = @room.bookings.build
+    @book_room = Booking.new
   end
 
   def create_book_now
     @room = Room.find(params[:room_id])
-    # @room.bookings.each do |booking|
-    #   booking.start_date + booking.length.days
-    # end
 
-    #proceed booking and verify uniqunees of booking.date_bookings
-      saved = @room.bookings.build(booking_params).save
-      if saved == true
-        booking = @room.bookings.last
-        booking.update(end_date: booking.start_date + booking.length.days)
-        c = booking.length
-        while c != 0
-          booking.date_bookings.build(date_booking: booking.start_date + c.days).save
-          c -= 1
-        end
-        booking.date_bookings.build(date_booking: booking.start_date).save
-        redirect_to root_path
-      # else
-      #   flash[:error] = "Dates not available"
-      #   redirect_to room_book_now_path(@room.id)
-      end
+    #Save booking in DB if model validation are OK
+    booking = @room.bookings.build(booking_params)
+    booking.save
+    #is the Booking saved ?
+    saved = booking.save #true/false
+
+    if saved == true
+      booking.update(end_date: booking.start_date + booking.length.days)
+      flash[:notice] = "Booking done"
+      redirect_to root_path
+    else
+      flash[:error] =  booking.errors.full_messages.first if booking.errors.any?
+      redirect_to room_book_now_path(@room.id)
+    end
 
   end
 
