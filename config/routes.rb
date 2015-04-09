@@ -1,5 +1,16 @@
 Rails.application.routes.draw do
-  resources :rooms
+
+  root 'rooms#index'
+  resources :rooms, only: [:index] do
+    match "/bookings/new" => "rooms#book_now", :via => :get, :as => "book_now"
+    match "/bookings" => "rooms#create_book_now", :via => :post
+    # get 'book_now', to: 'rooms#book_now', as: "book_now"
+    # post 'book_now', to: 'rooms#book_now'
+  end
+
+  resources :bookings
+  # match "/bookings/new" => "rooms#book_now", :via => :get, :as => "book_now"
+  # match "/bookings" => "rooms#create_book_now", :via => :post
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

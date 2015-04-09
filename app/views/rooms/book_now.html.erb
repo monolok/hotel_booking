@@ -1,0 +1,12 @@
+<%= console%>
+<h3>Booking the <%= @room.name%></h3>
+<%= flash[:error]%>
+<%= form_for(@book_room, :as => :post, :url => room_bookings_path) do |f| %>
+  <%= f.label :start_date %>:
+  <%= f.date_select :start_date %><br />
+
+  <%= f.label :length %>:
+  <%= f.text_field :length %><br />
+
+  <%= f.submit %>
+<% end %>

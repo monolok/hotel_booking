@@ -1,11 +1,43 @@
 class RoomsController < ApplicationController
   before_action :set_room, only: [:show, :edit, :update, :destroy]
+  #before_save :verify_dates, only: [:create_book_now]
 
   # GET /rooms
   # GET /rooms.json
   def index
     @rooms = Room.all
   end
+
+  def book_now
+    @room = Room.find(params[:room_id])
+    @book_room = @room.bookings.build
+  end
+
+  def create_book_now
+    @room = Room.find(params[:room_id])
+    # @room.bookings.each do |booking|
+    #   booking.start_date + booking.length.days
+    # end
+
+    #proceed booking and verify uniqunees of booking.date_bookings
+      saved = @room.bookings.build(booking_params).save
+      if saved == true
+        booking = @room.bookings.last
+        booking.update(end_date: booking.start_date + booking.length.days)
+        c = booking.length
+        while c != 0
+          booking.date_bookings.build(date_booking: booking.start_date + c.days).save
+          c -= 1
+        end
+        booking.date_bookings.build(date_booking: booking.start_date).save
+        redirect_to root_path
+      # else
+      #   flash[:error] = "Dates not available"
+      #   redirect_to room_book_now_path(@room.id)
+      end
+
+  end
+
 
   # GET /rooms/1
   # GET /rooms/1.json
@@ -71,4 +103,22 @@ class RoomsController < ApplicationController
     def room_params
       params.require(:room).permit(:name, :type, :price)
     end
+
+    def booking_params
+      params.require(:post).permit(:start_date, :length)
+    end
+
+
+    # def verify_dates
+    #   @room.bookings.each do |b|
+    #     if not b.empty?
+    #       errors.add(:base, "Date not available")
+    #       redirect_to room_book_now_path(@room.id)
+    #     else
+    #     end
+    #     #b.date_bookings.date_booking
+    #   end
+    #     date_bookings.empty?
+    # end
+
 end

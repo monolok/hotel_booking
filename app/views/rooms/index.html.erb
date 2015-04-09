@@ -16,11 +16,12 @@
     <% @rooms.each do |room| %>
       <tr>
         <td><%= room.name %></td>
-        <td><%= room.type %></td>
+        <td><%= room.type_room %></td>
         <td><%= room.price %></td>
-        <td><%= link_to 'Show', room %></td>
-        <td><%= link_to 'Edit', edit_room_path(room) %></td>
-        <td><%= link_to 'Destroy', room, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%# link_to 'Show', room %></td>
+        <td><%# link_to 'Edit', edit_room_path(room) %></td>
+        <td><%# link_to 'Destroy', room, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to "Book Now", room_book_now_path(room.id)%></td>
       </tr>
     <% end %>
   </tbody>
@@ -28,4 +29,4 @@
 
 <br>
 
-<%= link_to 'New Room', new_room_path %>
+<%# link_to 'New Room', new_room_path %>
