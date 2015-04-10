@@ -18,14 +18,18 @@ class RoomsController < ApplicationController
     booking = @room.bookings.build(booking_params)
    
     if booking.save  #Save booking in DB if model validation are OK
-      booking.update(end_date: booking.start_date + booking.length.days)
-      flash[:notice] = "Booking done"
-      redirect_to root_path
+      if @room.bookings.last.update(end_date: booking.start_date + booking.length.days)
+        flash[:notice] = "Booking done"
+        redirect_to root_path
+      else
+        @room.bookings.last.delete
+        flash[:error] =  "booking.errors.full_messages.first if booking.errors.any?"
+        redirect_to room_book_now_path(@room.id)
+      end
     else
       flash[:error] =  booking.errors.full_messages.first if booking.errors.any?
       redirect_to room_book_now_path(@room.id)
     end
-
   end
 
 
